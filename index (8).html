@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learn Programming</title>
+
+<style>
+    body { font-family: Arial; text-align: center; }
+    .page { display: none; padding: 20px; }
+    .lang-btn, .type-btn {
+        width: 200px; padding: 15px; margin: 10px auto;
+        border: 2px solid #000; cursor: pointer; font-size: 20px;
+    }
+    .hidden { display: none; }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #222; padding: 8px; }
+    input[type="text"] { width: 95%; padding: 5px; }
+    button { padding: 10px 20px; margin-top: 20px; font-size: 18px; cursor: pointer; }
+</style>
+
+</head>
+<body>
+
+<!-- PAGE 1 -->
+<div id="page1" class="page" style="display:block">
+    <div class="lang-btn" onclick="openPage2('html')">HTML</div>
+    <div class="lang-btn" onclick="openPage2('css')">CSS</div>
+    <div class="lang-btn" onclick="openPage2('js')">JavaScript</div>
+    <div class="lang-btn" onclick="openPage2('python')">Python</div>
+</div>
+
+<!-- PAGE 2 -->
+<div id="page2" class="page hidden">
+    <h2>What kind of codes do you want?</h2>
+
+    <div class="type-btn" onclick="openPage3('video')">Video</div>
+    <div class="type-btn" onclick="openPage3('audio')">Audios</div>
+    <div class="type-btn" onclick="openPage3('photo')">Photo</div>
+    <div class="type-btn" onclick="openPage3('text')">Texts</div>
+</div>
+
+<!-- PAGE 3 -->
+<div id="page3" class="page hidden">
+    <h2>Code Table</h2>
+
+    <table id="myTable">
+        <tr>
+            <th></th>
+            <th>كود</th>
+            <th>تعريفه</th>
+            <th>وظيفته</th>
+            <th>تعريف</th>
+        </tr>
+    </table>
+
+    <button id="pressBtn">press</button>
+</div>
+
+<script>
+    // التنقل بين الصفحات
+    function openPage2(lang){
+        document.getElementById("page1").style.display = "none";
+        document.getElementById("page2").style.display = "block";
+    }
+    function openPage3(type){
+        document.getElementById("page2").style.display = "none";
+        document.getElementById("page3").style.display = "block";
+    }
+
+    // ======== الجدول الديناميكي =========
+
+    let pressCount = 0;
+    const table = document.getElementById("myTable");
+    const pressBtn = document.getElementById("pressBtn");
+
+    // إضافة أول 4 صفوف
+    for (let i = 0; i < 4; i++) { addRow(); }
+
+    // إضافة صف جديد
+    function addRow() {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td><input type="checkbox"></td>
+            <td><input type="text" class="cell"></td>
+            <td><input type="text" class="cell"></td>
+            <td><input type="text" class="cell"></td>
+            <td><input type="text" class="cell"></td>
+        `;
+
+        const inputs = row.querySelectorAll("input[type='text']");
+
+        // إضافة صف جديد تلقائي عند آخر خلية
+        inputs.forEach((input, index) => {
+            input.addEventListener("input", () => {
+                if (isLastRow(row) && index === 3 && input.value.trim() !== "") {
+                    addRow();
+                }
+            });
+        });
+
+        table.appendChild(row);
+    }
+
+    function isLastRow(row) { return row === table.lastElementChild; }
+
+    // زر press
+    pressBtn.onclick = () => {
+        pressCount++;
+
+        if (pressCount === 1) lockTable();
+        if (pressCount === 5) { unlockTable(); pressCount = 0; }
+    };
+
+    function lockTable() {
+        document.querySelectorAll(".cell").forEach(inp => inp.readOnly = true);
+    }
+    function unlockTable() {
+        document.querySelectorAll(".cell").forEach(inp => inp.readOnly = false);
+    }
+
+</script>
+
+</body>
+</html>
